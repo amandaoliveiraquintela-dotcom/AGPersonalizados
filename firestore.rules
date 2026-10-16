@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Regras de acesso do banco da AG Personalizados.
+// Só as contas Google listadas abaixo leem e gravam dados.
+// Troque os dois e-mails pelos de vocês e cole este texto no Firebase:
+// Firestore Database > Regras > Publicar.
+// Não precisa colocar os e-mails reais neste arquivo no GitHub.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function socio() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'email-da-amanda@gmail.com',
+          'email-do-socio@gmail.com'
+        ];
+    }
+
+    match /{document=**} {
+      allow read, write: if socio();
+    }
+  }
+}
